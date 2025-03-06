@@ -17,9 +17,7 @@ from langchain.text_splitter import CharacterTextSplitter
 from langchain_openai import OpenAIEmbeddings
 from langchain_community.vectorstores import Chroma
 import constants as ct
-from langchain_community.document_loaders import WebBaseLoader
-import os
-os.environ['USER_AGENT'] = 'myagent'
+
 ############################################################
 # 設定関連
 ############################################################
@@ -213,9 +211,14 @@ def file_load(path, docs_all, integrated_docs_all):
     file_name = os.path.basename(path)
 
     # 想定していたファイル形式の場合のみ読み込む
+    from langchain_community.document_loaders import TextLoader #←追記
     if file_extension in ct.SUPPORTED_EXTENSIONS:
-        # ファイルの拡張子に合ったdata loaderを使ってデータ読み込み
-        loader = ct.SUPPORTED_EXTENSIONS[file_extension](path)
+        # TextLoaderの場合、エンコーディングを指定                 #←追記
+        if file_extension == '.txt':                            #←追記
+            loader = TextLoader(path, encoding='utf-8')         #←追記
+        else:
+            # ファイルの拡張子に合ったdata loaderを使ってデータ読み込み
+            loader = ct.SUPPORTED_EXTENSIONS[file_extension](path)
         docs = loader.load()
         # 整形対象のCSVファイルでない場合、通常のデータソースの入れ物「docs_all」にファイルデータを追加
         if not file_name in ct.CSV_INTEGRATION_TARGETS:
