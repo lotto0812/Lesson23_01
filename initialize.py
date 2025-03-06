@@ -18,8 +18,8 @@ from langchain_openai import OpenAIEmbeddings
 from langchain_community.vectorstores import Chroma
 import constants as ct
 from langchain_community.document_loaders import WebBaseLoader
-
-
+import os
+os.environ['USER_AGENT'] = 'myagent'
 ############################################################
 # 設定関連
 ############################################################
